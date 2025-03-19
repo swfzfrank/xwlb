@@ -1,4 +1,8 @@
 import re
+import logging
+
+# 配置日志记录器
+logging.basicConfig(filename='xwlb.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def parse_structured_text(text):
     # 主条目分割：优先用换行符，否则用分号
@@ -40,8 +44,8 @@ def parse_structured_text(text):
 def printStructuredData(structured_data):
     for item in structured_data:
         if isinstance(item, list):
-            print(f"{item[0]}")
+            logging.info(f"{item[0]}")
             for j, sub in enumerate(item[1], 1):
-                print(f"  └─({j}) {sub}")
+                logging.info(f"  └─({j}) {sub}")
         else:
-            print(item)
+            logging.info(item)

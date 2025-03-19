@@ -1,6 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+import chardet
+import logging
+
+# 配置日志记录器
+logging.basicConfig(filename='xwlb.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_xwlb_contextBrief(url):
     # 设置请求头，模拟浏览器访问
@@ -20,7 +25,7 @@ def get_xwlb_contextBrief(url):
     if brief_match:
         return brief_match.group(1)
     else:
-        print("未找到匹配的内容")
+        logging.info("未找到匹配的内容")
         return None
   
 
@@ -52,7 +57,7 @@ def get_xwlb_url_byDate(target_date=None):
         return videoUrl
 
     except Exception as e:
-        print(f"[ERROR] 抓取失败：{str(e)}")
+        logging.error(f"[ERROR] 抓取失败：{str(e)}")
         # 显示调试信息
         if 'resp' in locals():
             with open(f"debug_{target_date}.html", "w", encoding="utf-8") as f:
