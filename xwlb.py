@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-from datetime import datetime
 
 def get_xwlb_contextBrief(url):
     # 设置请求头，模拟浏览器访问
@@ -19,7 +18,6 @@ def get_xwlb_contextBrief(url):
     brief_match = re.search(brief_pattern, html, re.DOTALL)
 
     if brief_match:
-        print("匹配到的内容:", brief_match.group(1))
         return brief_match.group(1)
     else:
         print("未找到匹配的内容")
@@ -50,7 +48,6 @@ def get_xwlb_url_byDate(target_date=None):
 
         for element in content_div(['a']):
             videoUrl = element.get('href')
-            print(videoUrl)
         
         return videoUrl
 
@@ -61,9 +58,3 @@ def get_xwlb_url_byDate(target_date=None):
             with open(f"debug_{target_date}.html", "w", encoding="utf-8") as f:
                 f.write(resp.text)
         return None
-
-# 使用示例（获取当日新闻）
-if __name__ == "__main__":
-    url = get_xwlb_url_byDate("20250317")
-    if url:
-        result = get_xwlb_contextBrief(url)
