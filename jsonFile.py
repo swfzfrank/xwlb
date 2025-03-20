@@ -25,11 +25,11 @@ def load_from_json(date, filename="news_data.json"):
         with open(filename, "r", encoding="utf-8") as f:
             data = json.load(f)
             if date in data:
-                # 格式化输出
                 if isinstance(data[date], list):
-                    return "\n".join(json.dumps(item, ensure_ascii=False, indent=2) for item in data[date])
+                    return data[date]
                 else:
-                    return json.dumps(data[date], ensure_ascii=False, indent=2)
+                    logging.info("保存的数据格式有问题")
+                    return None
             else:
                 logging.info("未找到该日期的数据")
                 return "未找到该日期的数据"

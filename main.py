@@ -19,6 +19,24 @@ APP_KEY = 96458
 # 创建一个锁对象
 lock = threading.Lock()
 
+
+def join_list_with_newline(items):
+    """
+    将列表中的每个元素拼接成一个字符串，每个元素之间由换行符连接。
+    如果元素是列表，则递归处理。
+    
+    :param items: 包含字符串或列表的列表
+    :return: 拼接后的字符串
+    """
+    result = []
+    for item in items:
+        if isinstance(item, list):
+            result.append(join_list_with_newline(item))
+        else:
+            result.append(item)
+    return "\n".join(result)
+
+
 def process_xwlb(date_str):
     # 获取新闻联播的 URL
     url = xwlb.get_xwlb_url_byDate(date_str)
@@ -79,6 +97,8 @@ if __name__ == "__main__":
     logging.info(f"程序运行总时间: {elapsed_time}")
 
     readNews = jsonFile.load_from_json(end_day)
+    # 新增：将readNews列表中的每个元素拼接成一个字符串
+    readNews_str = join_list_with_newline(readNews)
     userUids = wxPusher.get_subscribed_uids(APP_TOKEN, APP_KEY)
-    result = wxPusher.send_wxpusher_message(readNews, userUids, APP_TOKEN, [38685])
+    result = wxPusher.send_wxpusher_message(readNews_str, userUids, APP_TOKEN, [38685], end_day + "新闻联播内容")
     logging.info("推送结果: %s", result)

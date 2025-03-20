@@ -29,13 +29,13 @@ def parse_structured_text(text):
         if not subTextFlag:
             result.append(f"{num_mark} {content}")
         else:
-            title = content.split('：')[0] # 提取主标题（子条目前的部分）
+            title = num_mark + content.split('：')[0] # 提取主标题（子条目前的部分）
             content = content.split('联播快讯：')[1]
             # 检测子条目（严格匹配 "（数字）内容" 格式）
             sub_pattern = r'(?:；|^)\s*([\(（]\d+[\)）])\s*(.*?)(?=；|$|（\d+）|\(\d+\))'
             sub_matches = re.findall(sub_pattern, content)
             
-            sub_list = [sub[1].strip() for sub in sub_matches]
+            sub_list = [sub[0] + sub[1].strip() for sub in sub_matches]
             result.append([f"{title}", sub_list])
             
     
