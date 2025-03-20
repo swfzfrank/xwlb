@@ -35,3 +35,9 @@ jobs:
     - name: Test with pytest
       run: |
         python main.py
+    - name: Save Log
+      uses: actions/upload-artifact@v3
+      with:
+        name: xwlb.log
+        path: |
+          xwlb.log
