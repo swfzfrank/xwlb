@@ -4,6 +4,7 @@
 name: Python application
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '30 14 * * *'  # 每日北京时间 22:30 执行
 
