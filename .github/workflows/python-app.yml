@@ -36,9 +36,10 @@ jobs:
     - name: Test with pytest
       run: |
         python main.py
-    - name: Save Log
+    - name: Save Files
       uses: actions/upload-artifact@v4
       with:
-        name: xwlb.log
+        name: Save log & news data JSON file
         path: |
           xwlb.log
+          news_data.json
