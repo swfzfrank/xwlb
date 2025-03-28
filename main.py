@@ -102,3 +102,5 @@ if __name__ == "__main__":
     userUids = wxPusher.get_subscribed_uids(APP_TOKEN, APP_KEY)
     result = wxPusher.send_wxpusher_message(readNews_str, userUids, APP_TOKEN, [38685], end_day + "新闻联播内容")
     logging.info("推送结果: %s", result)
+
+    

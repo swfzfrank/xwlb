@@ -3,3 +3,7 @@ beautifulsoup4
 chardet
 wxpusher
 jieba
+matplotlib
+WordCloud
+spacy
+textrank4zh
