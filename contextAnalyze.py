@@ -1,14 +1,11 @@
 import json
-import jieba.analyse  # 恢复 jieba.analyse 的导入
 from collections import defaultdict
 import logging
-import re
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from textrank4zh import TextRank4Keyword
 import spacy  # 确保 spacy 库已导入
 import time  # 导入 time 模块
-import concurrent.futures  # 添加 concurrent.futures 导入
 
 # 配置日志记录器
 logging.basicConfig(filename='xwlb.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -197,9 +194,12 @@ def plot_wordcloud(top_keywords, picName = 'wordcloud.png'):
     print(f"plot_wordcloud 执行时间: {end_time - start_time} 秒")  # 打印执行时间
 
 if __name__ == "__main__":
-    analyze_json_file()
+    #analyze_json_file()
     # 示例调用
-    keyname_counts = count_keywords_in_period(input_file="key_name.json")
+    from datetime import datetime, timedelta
+    last_month_first_day = (datetime.now().replace(day=1) - timedelta(days=1)).replace(day=1)
+    last_month_last_day = (datetime.now().replace(day=1) - timedelta(days=1))
+    keyname_counts = count_keywords_in_period(input_file="key_name.json", start_date=last_month_first_day.strftime("%Y%m%d"), end_date=last_month_last_day.strftime("%Y%m%d"))
     keyplace_counts = count_keywords_in_period(input_file="key_place.json")
     keyword_counts = count_keywords_in_period(input_file="key_words.json")
     plot_wordcloud(keyname_counts, "name_cloud.png")

@@ -6,11 +6,12 @@ from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 import wxPusher
+import contextAnalyze
 
 # 配置日志记录器
 logging.basicConfig(filename='xwlb.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-start_day = "20250301"
+start_day = "20250101"
 end_day = "current"
 # 配置参数
 APP_TOKEN = "AT_yqnyoG262pwdmA6esDdvyp804v74jsrK"  # xwlb专用 APP_TOKEN
@@ -52,6 +53,46 @@ def process_xwlb(date_str):
             jsonFile.save_to_json(structured_text, date_str)
     else:
         logging.info(f"无法获取新闻联播URL，日期: {date_str}")
+
+
+def is_start_of_month():
+    """
+    判断当前日期是否是月初。
+    
+    :return: 如果是月初返回 True，否则返回 False
+    """
+    today = datetime.now()
+    return today.day == 1
+
+def get_last_month_date_range():
+    today = datetime.now()
+    last_month_last_day = today.replace(day=1) - timedelta(days=1)
+    last_month_first_day = last_month_last_day.replace(day=1)
+    return last_month_first_day, last_month_last_day
+
+def perform_keyword_analysis_and_send_images(userUids, app_token, input_files, image_filenames, topicIds):
+    logging.info("今天是月初，进行关键字分析总结")
+    contextAnalyze.analyze_json_file()
+    last_month_first_day, last_month_last_day = get_last_month_date_range()
+
+    # 获取当前月份信息
+    current_month = last_month_first_day.strftime("%Y%m")
+    
+    keyword_counts_list = []
+    for input_file, image_filename in zip(input_files, image_filenames):
+        # 修改图片名称，添加月份信息
+        image_filename_with_month = f"{image_filename.split('.')[0]}_{current_month}.png"
+        titleName = {"name_cloud.png": "关键人名", "place_cloud.png": "关键地点", "words_cloud.png": "关键词"}
+        
+        keyword_counts = contextAnalyze.count_keywords_in_period(
+            input_file=input_file, 
+            start_date=last_month_first_day.strftime("%Y%m%d"), 
+            end_date=last_month_last_day.strftime("%Y%m%d")
+        )
+        keyword_counts_list.append(keyword_counts)
+        contextAnalyze.plot_wordcloud(keyword_counts, image_filename_with_month)
+        wxPusher.send_wxpusher_image(image_filename_with_month, userUids, app_token, topicIds, current_month + titleName[image_filename])
+
 
 if __name__ == "__main__":
     # 记录程序开始时间
@@ -103,4 +144,9 @@ if __name__ == "__main__":
     result = wxPusher.send_wxpusher_message(readNews_str, userUids, APP_TOKEN, [38685], end_day + "新闻联播内容")
     logging.info("推送结果: %s", result)
 
-    
+    # 每个月初进行一次关键字分析总结
+    if is_start_of_month():
+        input_files = ["key_name.json", "key_place.json", "key_words.json"]
+        image_filenames = ["name_cloud.png", "place_cloud.png", "words_cloud.png"]
+        topicIds = [39053]
+        perform_keyword_analysis_and_send_images(userUids, APP_TOKEN, input_files, image_filenames, topicIds)
