@@ -45,3 +45,6 @@ jobs:
         path: |
           xwlb.log
           news_data.json
+          key_name.json
+          key_place.json
+          key_words.json
