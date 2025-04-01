@@ -90,8 +90,11 @@ def perform_keyword_analysis_and_send_images(userUids, app_token, input_files, i
             end_date=last_month_last_day.strftime("%Y%m%d")
         )
         keyword_counts_list.append(keyword_counts)
-        contextAnalyze.plot_wordcloud(keyword_counts, image_filename_with_month)
-        wxPusher.send_wxpusher_image(image_filename_with_month, userUids, app_token, topicIds, current_month + titleName[image_filename])
+        try:
+            contextAnalyze.plot_wordcloud(keyword_counts, image_filename_with_month)
+            wxPusher.send_wxpusher_image(image_filename_with_month, userUids, app_token, topicIds, current_month + titleName[image_filename])
+        except Exception as e:
+            logging.info(f"生成或推送图片异常：{str(e) + image_filename_with_month}")
 
 
 if __name__ == "__main__":
