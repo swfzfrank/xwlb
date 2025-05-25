@@ -147,6 +147,7 @@ if __name__ == "__main__":
     result = wxPusher.send_wxpusher_message(readNews_str, userUids, APP_TOKEN, [38685], end_day + "新闻联播内容")
     logging.info("推送结果: %s", result)
 
+    
     # 每个月初进行一次关键字分析总结
     if is_start_of_month():
         input_files = ["key_name.json", "key_place.json", "key_words.json"]
