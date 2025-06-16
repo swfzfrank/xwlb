@@ -48,3 +48,12 @@ jobs:
           key_name.json
           key_place.json
           key_words.json
+    - name: Commit and Push
+      run: |
+        git config --local user.email "actions@github.com"
+        git config --local user.name "GitHub Actions"
+        git add news_data.json
+        git commit -m "Auto update by GitHub Actions" || true
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 直接使用默认令牌
