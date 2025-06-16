@@ -9,7 +9,7 @@ on:
     - cron: '00 00 * * *'  
 
 permissions:
-  contents: read
+  contents: write  # 授予写入权限
 
 jobs:
   build:
